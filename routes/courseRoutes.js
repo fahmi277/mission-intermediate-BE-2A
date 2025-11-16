@@ -6,7 +6,8 @@ const router = express.Router();
 // GET all courses
 router.get('/course', async (req, res) => {
   try {
-    const courses = await CourseService.getAll();
+    const { kategori_id, sortBy, search } = req.query;
+    const courses = await CourseService.getAll({ kategori_id, sortBy, search });
     res.json(courses);
   } catch (error) {
     res.status(500).json({ error: error.message });
