@@ -108,23 +108,32 @@ Invoke-RestMethod -Uri "http://localhost:3000/verify-email?token=YOUR_TOKEN_HERE
 
 ---
 
-### ✅ Test 5: Get Courses (dengan filter/sort/search)
+### ✅ Test 5: Get Courses (dengan filter/sort/search) 🔒
+
+**PENTING:** Semua endpoint course sekarang memerlukan authentication!
 
 ```powershell
+# Gunakan token dari Test 3 (Login)
+$token = "PASTE_YOUR_TOKEN_HERE"
+
+$headers = @{
+    "Authorization" = "Bearer $token"
+}
+
 # List all courses
-Invoke-RestMethod -Uri "http://localhost:3000/course"
+Invoke-RestMethod -Uri "http://localhost:3000/course" -Headers $headers
 
 # Filter by kategori_id
-Invoke-RestMethod -Uri "http://localhost:3000/course?kategori_id=1"
+Invoke-RestMethod -Uri "http://localhost:3000/course?kategori_id=1" -Headers $headers
 
 # Sort by harga
-Invoke-RestMethod -Uri "http://localhost:3000/course?sortBy=harga"
+Invoke-RestMethod -Uri "http://localhost:3000/course?sortBy=harga" -Headers $headers
 
 # Search "node"
-Invoke-RestMethod -Uri "http://localhost:3000/course?search=node"
+Invoke-RestMethod -Uri "http://localhost:3000/course?search=node" -Headers $headers
 
 # Kombinasi
-Invoke-RestMethod -Uri "http://localhost:3000/course?kategori_id=1&sortBy=harga&search=node"
+Invoke-RestMethod -Uri "http://localhost:3000/course?kategori_id=1&sortBy=harga&search=node" -Headers $headers
 ```
 
 ---
@@ -153,21 +162,6 @@ Invoke-RestMethod -Uri "http://localhost:3000/upload" -Method POST -Form $formDa
 ```
 
 **Akses file:** http://localhost:3000/upload/1700123456789-987654321.jpg
-
----
-
-### ✅ Test 7: Course dengan Authentication
-
-```powershell
-# Gunakan token dari login
-$token = "PASTE_YOUR_TOKEN_HERE"
-
-$headers = @{
-    "Authorization" = "Bearer $token"
-}
-
-Invoke-RestMethod -Uri "http://localhost:3000/course" -Headers $headers
-```
 
 ---
 
@@ -255,10 +249,14 @@ Content-Type: application/json
 
 ---
 
-### 📝 Request 4: Get All Courses
+### 📝 Request 4: Get All Courses 🔒
 
 **Method:** `GET`  
-**URL:** `http://localhost:3000/course`
+**URL:** `http://localhost:3000/course`  
+**Headers:**
+```
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+```
 
 **Optional Query Params:**
 - `kategori_id` = `1` (filter by category)
@@ -276,20 +274,25 @@ http://localhost:3000/course?kategori_id=1&sortBy=harga&search=node
 
 ---
 
-### 📝 Request 5: Get Course by ID
+### 📝 Request 5: Get Course by ID 🔒
 
 **Method:** `GET`  
-**URL:** `http://localhost:3000/course/1`
+**URL:** `http://localhost:3000/course/1`  
+**Headers:**
+```
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+```
 
 ---
 
-### 📝 Request 6: Create Course
+### 📝 Request 6: Create Course 🔒
 
 **Method:** `POST`  
 **URL:** `http://localhost:3000/course`  
 **Headers:**
 ```
 Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
 ```
 
 **Body (JSON):**
@@ -305,13 +308,14 @@ Content-Type: application/json
 
 ---
 
-### 📝 Request 7: Update Course
+### 📝 Request 7: Update Course 🔒
 
 **Method:** `PATCH`  
 **URL:** `http://localhost:3000/course/1`  
 **Headers:**
 ```
 Content-Type: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
 ```
 
 **Body (JSON):**
@@ -327,10 +331,14 @@ Content-Type: application/json
 
 ---
 
-### 📝 Request 8: Delete Course
+### 📝 Request 8: Delete Course 🔒
 
 **Method:** `DELETE`  
-**URL:** `http://localhost:3000/course/5`
+**URL:** `http://localhost:3000/course/5`  
+**Headers:**
+```
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+```
 
 ---
 
@@ -376,9 +384,14 @@ http://localhost:3000/upload/1700123456789-987654321.jpg
 
 ---
 
-### 🔒 Request dengan Authentication
+### 🔒 Cara Menggunakan Authentication Token
 
-Untuk request yang memerlukan auth (opsional di project ini), tambahkan header:
+**PENTING:** Semua endpoint `/course/*` sekarang **WAJIB** menggunakan authentication!
+
+**Langkah-langkah:**
+1. Login dulu → dapatkan token dari response
+2. Copy token tersebut
+3. Untuk setiap request course, tambahkan header:
 
 **Headers:**
 ```
@@ -390,6 +403,11 @@ Authorization: Bearer YOUR_JWT_TOKEN_HERE
 2. Add header:
    - Name: `Authorization`
    - Value: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+
+**Example di Postman:**
+1. Tab **Headers** atau **Authorization**
+2. Type: `Bearer Token`
+3. Paste token Anda
 
 ---
 

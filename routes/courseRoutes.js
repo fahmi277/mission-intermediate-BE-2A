@@ -1,10 +1,11 @@
 import express from 'express';
 import { CourseService } from '../services/courseService.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // GET all courses
-router.get('/course', async (req, res) => {
+router.get('/course', authMiddleware.verifyToken, async (req, res) => {
   try {
     const { kategori_id, sortBy, search } = req.query;
     const courses = await CourseService.getAll({ kategori_id, sortBy, search });
@@ -15,7 +16,7 @@ router.get('/course', async (req, res) => {
 });
 
 // GET course by ID
-router.get('/course/:id', async (req, res) => {
+router.get('/course/:id', authMiddleware.verifyToken, async (req, res) => {
   try {
     const course = await CourseService.getById(req.params.id);
     if (!course) {
@@ -28,7 +29,7 @@ router.get('/course/:id', async (req, res) => {
 });
 
 // POST create new course
-router.post('/course', async (req, res) => {
+router.post('/course', authMiddleware.verifyToken, async (req, res) => {
   try {
     await CourseService.create(req.body);
     res.status(201).json({ message: 'Course created' });
@@ -38,7 +39,7 @@ router.post('/course', async (req, res) => {
 });
 
 // PATCH update course
-router.patch('/course/:id', async (req, res) => {
+router.patch('/course/:id', authMiddleware.verifyToken, async (req, res) => {
   try {
     await CourseService.update(req.params.id, req.body);
     res.json({ message: 'Course updated' });
@@ -48,7 +49,7 @@ router.patch('/course/:id', async (req, res) => {
 });
 
 // DELETE remove course
-router.delete('/course/:id', async (req, res) => {
+router.delete('/course/:id', authMiddleware.verifyToken, async (req, res) => {
   try {
     await CourseService.remove(req.params.id);
     res.json({ message: 'Course deleted' });
